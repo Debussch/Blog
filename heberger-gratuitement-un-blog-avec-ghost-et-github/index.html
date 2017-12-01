@@ -24,7 +24,7 @@
     <meta property="og:url" content="https://debussch.github.io/blog/heberger-gratuitement-un-blog-avec-ghost-et-github/">
     <meta property="og:image" content="../content/images/2017/11/ghost_logo_big.png">
     <meta property="article:published_time" content="2017-11-30T22:21:00.000Z">
-    <meta property="article:modified_time" content="2017-12-01T14:12:24.000Z">
+    <meta property="article:modified_time" content="2017-12-01T16:06:45.000Z">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Hébergez votre blog gratuitement">
     <meta name="twitter:description" content="Envie de vous lancer dans l&#x27;aventure du blogging ? Découvrez des maintenant comment créer et héberger votre propre blog avec Ghost CMS et GitHub pages.">
@@ -53,7 +53,7 @@
     "headline": "Hébergez votre blog gratuitement avec Ghost et GitHub!",
     "url": "https://debussch.github.io/blog/heberger-gratuitement-un-blog-avec-ghost-et-github/",
     "datePublished": "2017-11-30T22:21:00.000Z",
-    "dateModified": "2017-12-01T14:12:24.000Z",
+    "dateModified": "2017-12-01T16:06:45.000Z",
     "image": {
         "@type": "ImageObject",
         "url": "https://debussch.github.io/blog/content/images/2017/11/ghost_logo_big.png",
@@ -231,6 +231,23 @@ Retournez ensuite sur l'invite de commande et exécutez la commande qui suit afi
             </footer>
 
 
+            <section class="post-full-comments">
+                <div id="disqus_thread"></div>
+                <script>
+                    var disqus_config = function () {
+                        this.page.url = 'https://debussch.github.io/blog/heberger-gratuitement-un-blog-avec-ghost-et-github/';
+                        this.page.identifier = 'ghost-5a203f8aa5d39f6ba0b2bb0f';
+                    };
+                    (function() {
+                        var d = document, s = d.createElement('script');
+                        s.src = 'https://thode.disqus.com/embed.js';
+                        s.setAttribute('data-timestamp', +new Date());
+                        (d.head || d.body).appendChild(s);
+                    })();
+                </script>
+            </section>
+            
+
         </article>
 
     </div>
@@ -272,7 +289,7 @@ Retournez ensuite sur l'invite de commande et exécutez la commande qui suit afi
         </div>
     </progress>
 </div>
-
+                            
 
 
 
@@ -296,9 +313,80 @@ Retournez ensuite sur l'invite de commande et exécutez la commande qui suit afi
     <script type="text/javascript" src="../assets/js/jquery.fitvids.js"></script>
 
 
-    
+    <script>
 
-    
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-96835481-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-96835481-2');
+</script>
 
 </body>
 </html>
